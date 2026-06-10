@@ -107,6 +107,15 @@
       </div>
     </div>
     <script>
+      // Suppor Farsi(Persian),Arabic and emoji
+      const encodeHash = (text) => {
+        return btoa(String.fromCharCode(...new TextEncoder().encode(text)));
+      };
+      const decodeHash = (base64) => {
+        const bytes = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
+        return new TextDecoder().decode(bytes);
+      };
+
       const searchbox = document.querySelector(".searchinput");
       const searchbtn = document.querySelector(".gsearch");
       const sleep = (time) =>
@@ -123,7 +132,7 @@
         await sleep(300);
       };
       if (location.hash?.length > 1) {
-        const query = atob(location.hash.substring(1));
+        const query = decodeHash(location.hash.substring(1));
         type(query).then(() =>
           location.replace(
             "https://goo" + `gle.com/search?q=${encodeURIComponent(query)}`,
@@ -132,7 +141,7 @@
       } else {
         searchbox.addEventListener(
           "input",
-          (e) => (location.hash = btoa(e.target.value)),
+          (e) => (location.hash = encodeHash(e.target.value)),
         );
         searchbox.addEventListener(
           "input",
